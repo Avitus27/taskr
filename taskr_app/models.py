@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    due_next = models.DateTimeField(auto_now_add=True)
+    due_next = models.DateTimeField()
     assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     # This should show/hide the repeat days field
     repeats = models.BooleanField(default=True)

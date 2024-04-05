@@ -386,6 +386,6 @@
       display: inline-block;
       padding: 0 0 0 7px;
     }
-    .event a:visited{
+    .event a:visited, .event a:link{
       color:#eee;
     }
