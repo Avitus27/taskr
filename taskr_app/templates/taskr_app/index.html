@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -10,7 +11,7 @@
         <title>Tasks - Home</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="{% static 'taskr_app/style/style.css' %}">
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -22,8 +23,19 @@
                 <li><a href="{% url 'taskr_app:detail' task.id %}">{{ task.title }}</a></li>
             {% endfor %}
             </ul>
+            <div class="calendar-widget" id="calendar">
+            </div>
         {% endif %}
         
-        <script src="js/script.js" async defer></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+        <script src="{% static 'taskr_app/js/script.js' %}"></script>
+        <script>
+            data = [
+            {% for item in tasks_due_soon_list %}
+             {eventName: "{{ item.title }}", calendar: "Tasks", color: "orange", date: new moment("{{ item.due_next }}"), ref: "{% url 'taskr_app:detail' item.id %}" },
+            {% endfor %}
+            ]
+            var calendar = new Calendar('#calendar', data);
+        </script>
     </body>
 </html>
