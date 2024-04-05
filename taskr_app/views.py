@@ -12,7 +12,7 @@ class IndexView(generic.ListView):
     context_object_name = "tasks_due_soon_list"
 
     def get_queryset(self):
-        return Task.objects.order_by("due_next")
+        return Task.objects.filter(complete__exact="False").order_by("due_next")
 
 
 class DetailView(generic.DetailView):
