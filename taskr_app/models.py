@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.forms import ValidationError
 from django.utils import timezone
 from django.db import models
@@ -20,6 +20,9 @@ class Task(models.Model):
         default=1, verbose_name="Repeat every _ days", validators=[MinValueValidator(1)])
     complete = models.BooleanField(default=False)
 
+    def is_overdue(self) -> bool:
+        return self.due_next < timezone.now()
+
     def __str__(self) -> str:
         return self.title
 
@@ -33,12 +36,17 @@ class Task(models.Model):
             raise ValidationError(
                 'Tasks can only be planned for a future time.')
 
+    # TODO: Use timezone type built into django
     def mark_done(self):
-        if (self.repeats):
-            # don't mark as complete, just update the next due date
-            self.due_next = self.due_next + timedelta(self.repeat_days)
-            pass
-        else:
-            # mark as complete
-            self.complete = True
-        return
+        try:
+            if (self.repeats):
+                # don't mark as complete, just update the next due date
+                self.due_next = datetime.combine(timezone.now().date(), self.due_next.time()) + \
+                    timedelta(self.repeat_days)
+                return (True, False)
+            else:
+                # mark as complete
+                self.complete = True
+                return (True, True)
+        except:
+            return (False, False)
